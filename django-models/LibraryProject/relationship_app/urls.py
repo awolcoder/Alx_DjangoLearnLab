@@ -12,7 +12,6 @@ from .views import (
     member_view
 )
 
-
 urlpatterns = [
     # Book views
     path('books/', list_books, name='list_books'),
