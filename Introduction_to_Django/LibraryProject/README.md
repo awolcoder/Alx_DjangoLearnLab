@@ -6,5 +6,5 @@ This is the initial Django project setup for learning purposes.
 
 1. Activate the virtual environment:
    ```bash
-   source ../venv/bin/activate
+   source ./venv/bin/activate
 
