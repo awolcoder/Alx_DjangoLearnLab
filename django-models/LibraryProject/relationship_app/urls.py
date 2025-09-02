@@ -1,6 +1,14 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
+from .views import add_book, edit_book, delete_book
 from . import views 
+
+urlpatterns += [
+    path('book/add/', add_book, name='add_book'),
+    path('book/edit/<int:pk>/', edit_book, name='edit_book'),
+    path('book/delete/<int:pk>/', delete_book, name='delete_book'),
+]
+
 
 urlpatterns = [
     path('books/', views.list_books, name='list_books'),
