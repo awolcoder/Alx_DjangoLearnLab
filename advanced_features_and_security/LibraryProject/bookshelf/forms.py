@@ -12,3 +12,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ['username', 'email', 'date_of_birth', 'profile_photo']
 
+class ExampleForm(forms.Form):
+    title = forms.CharField(max_length=100)
+    author = forms.CharField(max_length=100)
+    publication_year = forms.IntegerField()
