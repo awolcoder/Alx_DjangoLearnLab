@@ -45,7 +45,7 @@ class BookListCreateView(generics.ListCreateAPIView):
     # Enable filtering, search, and ordering
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
 
-    # Fields for filtering via query params, e.g., ?publication_year=2020
+    # Fields for filtering via query params
     filterset_fields = ['title', 'author__name', 'publication_year']
 
     # Fields for text search via ?search=keyword
@@ -53,7 +53,7 @@ class BookListCreateView(generics.ListCreateAPIView):
 
     # Fields for ordering via ?ordering=title or ?ordering=-publication_year
     ordering_fields = ['title', 'publication_year', 'author__name']
-    ordering = ['title']  # default ordering
+    ordering = ['title']  
 
 
 class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
