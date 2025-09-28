@@ -9,11 +9,21 @@ from .serializers import AuthorSerializer, BookSerializer
 # -------------------------
 
 class AuthorListCreateView(generics.ListCreateAPIView):
+    """
+    GET: List all authors
+    POST: Create a new author (authenticated users only)
+    """
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+
 class AuthorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: Retrieve a single author
+    PUT/PATCH: Update author details (authenticated users only)
+    DELETE: Delete author (authenticated users only)
+    """
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -25,8 +35,8 @@ class AuthorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class BookListCreateView(generics.ListCreateAPIView):
     """
-    GET: Returns a list of all books with filtering, searching, and ordering.
-    POST: Creates a new book (authenticated users only)
+    GET: List all books with filtering, search, and ordering capabilities
+    POST: Create a new book (authenticated users only)
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -45,7 +55,13 @@ class BookListCreateView(generics.ListCreateAPIView):
     ordering_fields = ['title', 'publication_year', 'author__name']
     ordering = ['title']  # default ordering
 
+
 class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: Retrieve a single book by ID
+    PUT/PATCH: Update book details (authenticated users only)
+    DELETE: Delete book (authenticated users only)
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
