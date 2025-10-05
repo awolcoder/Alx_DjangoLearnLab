@@ -2,23 +2,26 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Post, Comment
-from taggit.forms import TagWidget  
+from taggit.forms import TagWidget
 
+# User registration form
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+# Post creation/update form with tags
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tags']  
+        fields = ['title', 'content', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'placeholder': 'Write your post...'}),
-            'tags': TagWidget(attrs={'class': 'form-control', 'placeholder': 'Add tags'}),  
+            'tags': TagWidget(attrs={'class': 'form-control', 'placeholder': 'Add tags'}),
         }
 
+# Comment form
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
