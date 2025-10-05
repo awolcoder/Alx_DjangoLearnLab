@@ -4,12 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import CustomUserCreationForm, PostForm
-from .models import Post
+from django.views import View
+from .forms import CustomUserCreationForm, PostForm, CommentForm
+from .models import Post, Comment
 
 
 # ---------- AUTH VIEWS ----------
-
 def register_view(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -48,8 +48,6 @@ def logout_view(request):
 
 
 # ---------- BLOG POST CRUD VIEWS ----------
-
-# List all posts (anyone can view)
 class PostListView(ListView):
     model = Post
     template_name = "blog/post_list.html"
@@ -57,14 +55,18 @@ class PostListView(ListView):
     ordering = ["-published_date"]
 
 
-# View details of one post
 class PostDetailView(DetailView):
     model = Post
     template_name = "blog/post_detail.html"
     context_object_name = "post"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["comments"] = self.object.comments.order_by("-created_at")
+        context["form"] = CommentForm()
+        return context
 
-# Create new post (only logged-in users)
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
@@ -76,7 +78,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# Edit post (only author)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
@@ -88,7 +89,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == post.author
 
 
-# Delete post (only author)
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = "blog/post_confirm_delete.html"
@@ -97,3 +97,28 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
+
+# ---------- COMMENT VIEWS ----------
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect("post_detail", pk=post.pk)
+    return redirect("post_detail", pk=post.pk)
+
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user == comment.author:
+        post_pk = comment.post.pk
+        comment.delete()
+        return redirect("post_detail", pk=post_pk)
+    return redirect("post_detail", pk=comment.post.pk)
