@@ -69,7 +69,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        self.object.tags.set(form.cleaned_data['tags'])
+        return response
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -79,6 +81,11 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user == self.get_object().author
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        self.object.tags.set(form.cleaned_data['tags'])
+        return response
+    
     def get_success_url(self):
         return self.get_object().get_absolute_url()
 
