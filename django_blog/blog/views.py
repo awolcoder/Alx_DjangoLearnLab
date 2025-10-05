@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views import View
 from .forms import CustomUserCreationForm, PostForm, CommentForm
 from .models import Post, Comment
 
@@ -47,7 +46,7 @@ def logout_view(request):
     return redirect("login")
 
 
-# ---------- BLOG POST CRUD VIEWS ----------
+# ---------- POST CRUD VIEWS ----------
 class PostListView(ListView):
     model = Post
     template_name = "blog/post_list.html"
@@ -99,7 +98,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
 
 
-# ---------- COMMENT VIEWS ----------
+# ---------- COMMENT CRUD VIEWS ----------
 @login_required
 def add_comment(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -122,3 +121,16 @@ def delete_comment(request, pk):
         comment.delete()
         return redirect("post_detail", pk=post_pk)
     return redirect("post_detail", pk=comment.post.pk)
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse_lazy("post_detail", kwargs={"pk": self.object.post.pk})
