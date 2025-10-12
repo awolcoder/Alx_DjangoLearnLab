@@ -3,16 +3,14 @@ from rest_framework.pagination import PageNumberPagination
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
-
-# Custom permission: users can edit/delete only their own content
 class IsAuthorOrReadOnly(permissions.BasePermission):
+    """Custom permission: users can edit/delete only their own content"""
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.author == request.user
 
 
-# Pagination
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 5
     page_size_query_param = 'page_size'
