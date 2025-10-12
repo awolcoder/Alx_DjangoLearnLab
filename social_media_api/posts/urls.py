@@ -9,6 +9,7 @@ router.register(r'comments', CommentViewSet, basename='comment')
 urlpatterns = [
     path('', include(router.urls)),
     path('feed/', FeedView.as_view(), name='feed'),
+    # Like/Unlike endpoints added without removing previous routes
     path('posts/<int:pk>/like/', like_post, name='like-post'),
     path('posts/<int:pk>/unlike/', unlike_post, name='unlike-post'),
 ]
