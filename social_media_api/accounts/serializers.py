@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 
 User = get_user_model() 
 
-# 🧩 User Registration Serializer
+# User Registration Serializer
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -24,7 +24,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-# 🧩 User Login Serializer
+# User Login Serializer
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -37,8 +37,13 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Invalid credentials.")
 
 
-# 🧩 User Profile Serializer
+# User Profile Serializer
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
