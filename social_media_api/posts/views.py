@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, generics
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .models import Post, Comment
