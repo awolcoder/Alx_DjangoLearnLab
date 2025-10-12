@@ -1,4 +1,5 @@
-from rest_framework import status, permissions, generics
+from .models import User as CustomUser
+from rest_framework import status, viewsets, permissions, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import get_user_model
@@ -54,3 +55,8 @@ def unfollow_user(request, user_id):
 
     request.user.following.remove(target_user)
     return Response({"detail": f"You have unfollowed {target_user.username}."}, status=status.HTTP_200_OK)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
