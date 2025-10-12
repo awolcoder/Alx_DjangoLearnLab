@@ -78,4 +78,3 @@ def unlike_post(request, pk):
     if deleted:
         return Response({"detail": "Post unliked."})
     return Response({"detail": "You have not liked this post."}, status=400)
-
