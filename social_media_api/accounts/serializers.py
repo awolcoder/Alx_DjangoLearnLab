@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from .models import User
 
-# User Registration Serializer
+
+# 🧩 User Registration Serializer
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -23,7 +24,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-# Login Serializer
+# 🧩 User Login Serializer
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -32,13 +33,12 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user:
             token, created = Token.objects.get_or_create(user=user)
-            return {'user': user, 'token': token.key}
+            return {'user': user.username, 'token': token.key}
         raise serializers.ValidationError("Invalid credentials.")
 
 
-# Profile Serializer
+# 🧩 User Profile Serializer
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
-
